@@ -10,8 +10,8 @@ import Clients from "./pages/Clients";
 import Exercises from "./pages/Exercises";
 import Profile from "./pages/Profile";
 import Schedule from "./pages/Schedule";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />

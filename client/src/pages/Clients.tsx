@@ -3,7 +3,9 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Trash2, Edit2 } from "lucide-react";
+import { ArrowLeft, Trash2, Edit2, Send } from "lucide-react";
+import { useTelegramSync } from "@/hooks/useTelegramSync";
+import { toast } from "sonner";
 
 interface Client {
   id: string;
@@ -25,6 +27,7 @@ export default function Clients() {
     experience: "",
   });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const { syncToTelegram, isSyncing } = useTelegramSync();
 
   // Load clients from localStorage
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function Clients() {
 
   const handleAddClient = () => {
     if (!formData.name || !formData.phone || !formData.email) {
-      alert("Заполните обязательные поля");
+      toast.error("Заполните обязательные поля");
       return;
     }
 
@@ -52,12 +55,14 @@ export default function Clients() {
       );
       saveClients(updated);
       setEditingId(null);
+      toast.success("Клиент обновлен");
     } else {
       const newClient: Client = {
         id: Date.now().toString(),
         ...formData,
       };
       saveClients([...clients, newClient]);
+      toast.success("Клиент добавлен");
     }
 
     setFormData({
@@ -83,6 +88,16 @@ export default function Clients() {
   const handleDelete = (id: string) => {
     if (confirm("Удалить клиента?")) {
       saveClients(clients.filter((c) => c.id !== id));
+      toast.success("Клиент удален");
+    }
+  };
+
+  const handleSyncToTelegram = async () => {
+    const result = await syncToTelegram({ clients });
+    if (result.success) {
+      toast.success("Данные синхронизированы с Telegram!");
+    } else {
+      toast.error("Ошибка синхронизации");
     }
   };
 
@@ -104,6 +119,18 @@ export default function Clients() {
           </Button>
           <h1 className="text-3xl font-bold text-white">Клиенты</h1>
         </div>
+
+        {/* Sync Button */}
+        {clients.length > 0 && (
+          <Button
+            onClick={handleSyncToTelegram}
+            disabled={isSyncing}
+            className="w-full mb-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold flex items-center justify-center gap-2"
+          >
+            <Send size={18} />
+            {isSyncing ? "Синхронизация..." : "Синхронизировать с Telegram"}
+          </Button>
+        )}
 
         {/* Form */}
         <Card className="bg-white/95 backdrop-blur p-6 mb-6 rounded-2xl">
