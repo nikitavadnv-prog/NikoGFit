@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -10,11 +10,15 @@ import Clients from "./pages/Clients";
 import Exercises from "./pages/Exercises";
 import Profile from "./pages/Profile";
 import Schedule from "./pages/Schedule";
-function Router() {
-  // make sure to consider if you need authentication for certain routes
+import Login from "./pages/Login";
+function Router({ isAuthenticated }: { isAuthenticated: boolean }) {
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"./"} component={Home} />
       <Route path={"/clients"} component={Clients} />
       <Route path={"/exercises"} component={Exercises} />
       <Route path={"/profile"} component={Profile} />
@@ -26,7 +30,13 @@ function Router() {
 }
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useEffect(() => {
+    // Check if user is logged in
+    const user = localStorage.getItem("ngfit_user");
+    setIsAuthenticated(!!user);
+
     // Initialize Telegram WebApp
     const tg = (window as any).Telegram?.WebApp;
     if (tg) {
@@ -60,7 +70,7 @@ function App() {
               backgroundImage: "url('/images/gym-bg.png')",
             }}
           >
-            <Router />
+            <Router isAuthenticated={isAuthenticated} />
           </div>
         </TooltipProvider>
       </ThemeProvider>

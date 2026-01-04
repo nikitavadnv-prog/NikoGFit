@@ -14,6 +14,10 @@ interface Client {
   email: string;
   birthDate: string;
   experience: string;
+  injuries: string;
+  contraindications: string;
+  chronicDiseases: string;
+  badHabits: string;
 }
 
 export default function Clients() {
@@ -25,6 +29,10 @@ export default function Clients() {
     email: "",
     birthDate: "",
     experience: "",
+    injuries: "",
+    contraindications: "",
+    chronicDiseases: "",
+    badHabits: "",
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const { syncToTelegram, isSyncing } = useTelegramSync();
@@ -71,6 +79,10 @@ export default function Clients() {
       email: "",
       birthDate: "",
       experience: "",
+      injuries: "",
+      contraindications: "",
+      chronicDiseases: "",
+      badHabits: "",
     });
   };
 
@@ -81,6 +93,10 @@ export default function Clients() {
       email: client.email,
       birthDate: client.birthDate,
       experience: client.experience,
+      injuries: client.injuries,
+      contraindications: client.contraindications,
+      chronicDiseases: client.chronicDiseases,
+      badHabits: client.badHabits,
     });
     setEditingId(client.id);
   };
@@ -186,6 +202,38 @@ export default function Clients() {
               <option value="1-3 года">1-3 года</option>
               <option value="Более 3 лет">Более 3 лет</option>
             </select>
+            <textarea
+              placeholder="Травмы (если есть)"
+              value={formData.injuries}
+              onChange={(e) =>
+                setFormData({ ...formData, injuries: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 resize-none h-20"
+            />
+            <textarea
+              placeholder="Противопоказания"
+              value={formData.contraindications}
+              onChange={(e) =>
+                setFormData({ ...formData, contraindications: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 resize-none h-20"
+            />
+            <textarea
+              placeholder="Хронические заболевания"
+              value={formData.chronicDiseases}
+              onChange={(e) =>
+                setFormData({ ...formData, chronicDiseases: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 resize-none h-20"
+            />
+            <textarea
+              placeholder="Вредные привычки"
+              value={formData.badHabits}
+              onChange={(e) =>
+                setFormData({ ...formData, badHabits: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 resize-none h-20"
+            />
 
             <Button
               onClick={handleAddClient}
@@ -215,6 +263,26 @@ export default function Clients() {
                   {client.experience && (
                     <p className="text-xs text-gray-500 mt-1">
                       Опыт: {client.experience}
+                    </p>
+                  )}
+                  {client.injuries && (
+                    <p className="text-xs text-red-600 mt-1">
+                      🩹 Травмы: {client.injuries}
+                    </p>
+                  )}
+                  {client.contraindications && (
+                    <p className="text-xs text-orange-600 mt-1">
+                      ⚠️ Противопоказания: {client.contraindications}
+                    </p>
+                  )}
+                  {client.chronicDiseases && (
+                    <p className="text-xs text-yellow-600 mt-1">
+                      💊 Заболевания: {client.chronicDiseases}
+                    </p>
+                  )}
+                  {client.badHabits && (
+                    <p className="text-xs text-gray-600 mt-1">
+                      🚭 Привычки: {client.badHabits}
                     </p>
                   )}
                 </div>
