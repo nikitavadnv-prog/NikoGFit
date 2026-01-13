@@ -10,7 +10,7 @@ RUN npm install -g pnpm@8
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --legacy-peer-deps
 
 # Copy source code
 COPY . .
